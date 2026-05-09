@@ -31,8 +31,24 @@ def create_password_protected_zip(zip_foldername, password, paths):
                         zf.write(child, arcname=arcname)
 
 if __name__ == "__main__":
-    zip_foldername = input("作成するzipフォルダの名前を入力してください（例: secret.zip）: ")
-    password = getpass.getpass("パスワードを入力してください: ")
-    files = input("圧縮するファイルのパスをカンマ区切りで入力してください: ").split(",")
-    create_password_protected_zip(zip_foldername, password, files)
-    print(f"{zip_foldername} が作成されました。")
+    choice = input("コマンドラインツールかtkinter GUIのどちらを使用しますか？ (cli/gui): ").strip().lower()
+    if choice == "cli":
+        zip_foldername = input("作成するzipフォルダの名前を入力してください（例: secret.zip）(注:拡張子.zipまで入力してください): ")
+        password = getpass.getpass("パスワードを入力してください: ")
+        files = input("圧縮するファイルのパスをカンマ区切りで入力してください: ").split(",")
+        create_password_protected_zip(zip_foldername, password, files)
+        print(f"{zip_foldername} が作成されました。")
+    elif choice == "gui":
+        import tkinter as tk
+        from tkinter import filedialog,simpledialog
+        
+        root = tk.Tk()
+        root.withdraw()  # メインウィンドウを非表示にする
+        zip_foldername = simpledialog.askstring("Zipファイル名", "作成するzipフォルダの名前を入力してください（例: secret.zip）(注:拡張子.zipまで入力してください):")
+        password = simpledialog.askstring("パスワード", "パスワードを入力してください:", show='*')
+        files = filedialog.askdirectory(title="圧縮するフォルダを選択してください")
+        create_password_protected_zip(zip_foldername, password, [files])
+        print(f"{zip_foldername} が作成されました。")
+    else:
+        print("無効な選択です。cli または gui を入力してください。")
+        
