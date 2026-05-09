@@ -16,17 +16,18 @@ def create_password_protected_zip(zip_foldername, password, paths):
         compression=pyzipper.ZIP_DEFLATED,
         encryption=pyzipper.WZ_AES,
     ) as zf:
-        zf.setpassword(password.encode("utf-8"))
 
         for raw_path in paths:
             path = Path(raw_path.strip())
 
             if path.is_file():
+                zf.setpassword(password.encode("utf-8"))
                 zf.write(path, arcname=path.name)
             elif path.is_dir():
                 for child in path.rglob("*"):
                     if child.is_file():
                         arcname = str(child.relative_to(path.parent))
+                        zf.setpassword(password.encode("utf-8"))
                         zf.write(child, arcname=arcname)
 
 if __name__ == "__main__":
