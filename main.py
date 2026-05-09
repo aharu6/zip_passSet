@@ -73,11 +73,61 @@ if __name__ == "__main__":
         
         root = tk.Tk()
         root.withdraw()  # メインウィンドウを非表示にする
-        zip_foldername = simpledialog.askstring("Zipファイル名", "作成するzipフォルダの名前を入力してください（例: secret.zip）(注:拡張子.zipまで入力してください):")
-        password = simpledialog.askstring("パスワード", "パスワードを入力してください:", show='*')
-        files = filedialog.askdirectory(title="圧縮するフォルダを選択してください")
-        create_password_protected_zip(zip_foldername, password, [files])
-        print(f"{zip_foldername} が作成されました。")
+        actions = simpledialog.askstring("アクション選択", "zipファイルを作成しますか？解凍しますか？ (create/extract):")
+        if actions is None:
+            print("キャンセルされました。")
+            root.destroy()
+            raise SystemExit(0)
+
+        actions = actions.strip().lower()
+
+        if actions == "create":
+            zip_foldername = simpledialog.askstring("Zipファイル名", "作成するzipフォルダの名前を入力してください（例: secret.zip）(注:拡張子.zipまで入力してください):")
+            if not zip_foldername:
+                print("zipファイル名が未入力のため処理を中止しました。")
+                root.destroy()
+                raise SystemExit(0)
+
+            password = simpledialog.askstring("パスワード", "パスワードを入力してください:", show='*')
+            if password is None:
+                print("キャンセルされました。")
+                root.destroy()
+                raise SystemExit(0)
+
+            files = filedialog.askdirectory(title="圧縮するフォルダを選択してください")
+            if not files:
+                print("圧縮するフォルダが未選択のため処理を中止しました。")
+                root.destroy()
+                raise SystemExit(0)
+
+            create_password_protected_zip(zip_foldername, password, [files])
+            print(f"{zip_foldername} が作成されました。")
+        elif actions == "extract":
+            zip_foldername = filedialog.askopenfilename(title="解凍するzipファイルを選択してください", filetypes=[("Zip files", "*.zip")])
+            if not zip_foldername:
+                print("解凍するzipファイルが未選択のため処理を中止しました。")
+                root.destroy()
+                raise SystemExit(0)
+
+            password = simpledialog.askstring("パスワード", "パスワードを入力してください:", show='*')
+            password = password.strip() if password else None
+            if password is None:
+                print("キャンセルされました。")
+                root.destroy()
+                raise SystemExit(0)
+
+            extract_to = filedialog.askdirectory(title="解凍先のフォルダを選択してください")
+            if not extract_to:
+                print("解凍先フォルダが未選択のため処理を中止しました。")
+                root.destroy()
+                raise SystemExit(0)
+
+            if extract_zip(zip_foldername, password, extract_to):
+                print(f"{zip_foldername} が {extract_to} に解凍されました。")
+        else:
+            print("無効なアクションです。create または extract を入力してください。")
+
+        root.destroy()
     else:
         print("無効な選択です。cli または gui を入力してください。")
         
