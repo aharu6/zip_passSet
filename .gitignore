@@ -1,2 +1,10 @@
 secret25.zip
 open_folder/
+ secret**.zip
+.gitignore
+secret**.zip
+zip_pasSet.zip
+2026-1-13name26.csv
+.DS_Store
+__pycache__/
+macターミナルコマンドでパスワード付きzipファイル作成.txt
