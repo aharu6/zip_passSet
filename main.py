@@ -54,7 +54,12 @@ def extract_zip(zip_foldername, password, extract_to):
         return False
         
 if __name__ == "__main__":
-    choice = input("コマンドラインツールかtkinter GUIのどちらを使用しますか？ (cli/gui): ").strip().lower()
+    #説明文表示
+    print("このスクリプトは、パスワード付きzipフォルダを作成したり、解凍したりするためのツールです。\nコマンドラインツールとtkinter GUIの両方に対応しています。",
+        "\n暗号化形式はAES-256を使用していますが、互換性のためにセキュリティは弱めになっています。",
+        "\nlinuxやmacOSではデフォルトの環境で解凍ができますが、windowsでは7-Zipなどのサードパーティ製の解凍ツール・本ツールでの解凍が必要です。"
+        )
+    choice = input("コマンドラインツールかtkinter GUIのどちらを使用しますか？使用する方を入力してください (cli/gui): ").strip().lower()
     if choice == "cli":
         actions = input("zipファイルを作成しますか？解凍しますか？ (create/extract): ").strip().lower()
         zip_foldername = input("作成するzipフォルダの名前を入力してください（例: secret.zip）(注:拡張子.zipまで入力してください): ")
