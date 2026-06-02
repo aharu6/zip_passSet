@@ -1,14 +1,11 @@
-"""
-パスワード付きzipフォルダを作成するスクリプト
-コマンドラインで動作する
-"""
+"""ZipCryptoを使用してパスワード付きzipフォルダを作成するスクリプト"""
 
 import pyzipper
 import os
 import getpass
 from pathlib import Path
 
-def create_password_protected_zip(zip_foldername, password, paths):
+def create_password_protected_zip(zip_foldername, password, files):
     # 互換性重視（セキュリティは弱め）
     with pyzipper.AESZipFile(
         zip_foldername,
@@ -18,15 +15,14 @@ def create_password_protected_zip(zip_foldername, password, paths):
     ) as zf:
         zf.setpassword(password.encode("utf-8"))
 
-        for raw_path in paths:
-            path = Path(raw_path.strip())
-
-            if path.is_file():
-                zf.write(path, arcname=path.name)
-            elif path.is_dir():
-                for child in path.rglob("*"):
+        for raw in files:
+            p = Path(raw.strip())
+            if p.is_file():
+                zf.write(p, arcname=p.name)
+            elif p.is_dir():
+                for child in p.rglob("*"):
                     if child.is_file():
-                        arcname = str(child.relative_to(path.parent))
+                        arcname = str(child.relative_to(p.parent))
                         zf.write(child, arcname=arcname)
 
 if __name__ == "__main__":
